@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Repository\" />
+    <None Remove="Services\" />
+    <None Remove="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Repository\" />
+    <Folder Include="Services\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Campaigns.Data\Campaigns.Data.csproj" />
+    <ProjectReference Include="..\Campaigns.Models\Campaigns.Models.csproj" />
+    <ProjectReference Include="..\CustomExceptions\CustomExceptions.csproj" />
+  </ItemGroup>
+</Project>

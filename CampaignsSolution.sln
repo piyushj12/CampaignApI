@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1706.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campaigns", "Campaigns\Campaigns.csproj", "{1FDFB6A1-0A08-41C7-8AB3-5AADE5FC78CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campaigns.Api", "Campaigns\Campaigns.Api.csproj", "{1FDFB6A1-0A08-41C7-8AB3-5AADE5FC78CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campaigns.Models", "Campaigns.Models\Campaigns.Models.csproj", "{577C949C-1FF0-401A-BB60-C6EA14475555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campaigns.Data", "Campaigns.Data\Campaigns.Data.csproj", "{20090FC3-38F4-42BC-B915-88A8AA09D81B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campaigns.Services", "Campaigns.Services\Campaigns.Services.csproj", "{32632CEF-92CB-4767-95C0-AE3BE356D9B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Campaigns.Common", "Campaigns.Common\Campaigns.Common.csproj", "{0E77D17C-7AF0-493A-8108-EE9D3B882FBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomExceptions", "CustomExceptions\CustomExceptions.csproj", "{475915B5-B62F-4876-AE92-313CE96AC102}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +25,35 @@ Global
 		{1FDFB6A1-0A08-41C7-8AB3-5AADE5FC78CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FDFB6A1-0A08-41C7-8AB3-5AADE5FC78CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FDFB6A1-0A08-41C7-8AB3-5AADE5FC78CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{577C949C-1FF0-401A-BB60-C6EA14475555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{577C949C-1FF0-401A-BB60-C6EA14475555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{577C949C-1FF0-401A-BB60-C6EA14475555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{577C949C-1FF0-401A-BB60-C6EA14475555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20090FC3-38F4-42BC-B915-88A8AA09D81B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20090FC3-38F4-42BC-B915-88A8AA09D81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20090FC3-38F4-42BC-B915-88A8AA09D81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20090FC3-38F4-42BC-B915-88A8AA09D81B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32632CEF-92CB-4767-95C0-AE3BE356D9B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32632CEF-92CB-4767-95C0-AE3BE356D9B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32632CEF-92CB-4767-95C0-AE3BE356D9B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32632CEF-92CB-4767-95C0-AE3BE356D9B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E77D17C-7AF0-493A-8108-EE9D3B882FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E77D17C-7AF0-493A-8108-EE9D3B882FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E77D17C-7AF0-493A-8108-EE9D3B882FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E77D17C-7AF0-493A-8108-EE9D3B882FBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{475915B5-B62F-4876-AE92-313CE96AC102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{475915B5-B62F-4876-AE92-313CE96AC102}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{475915B5-B62F-4876-AE92-313CE96AC102}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{475915B5-B62F-4876-AE92-313CE96AC102}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD22B1AC-C0D9-4550-8133-25ACBBECC138}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
 	EndGlobalSection
 EndGlobal
