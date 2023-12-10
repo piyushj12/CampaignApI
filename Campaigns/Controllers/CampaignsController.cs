@@ -8,7 +8,7 @@ using Campaigns.Models;
 using Campaigns.Services.Interfaces;
 using CustomExceptions;
 using Microsoft.AspNetCore.Mvc;
-
+using MongoDB.Bson;
 
 namespace Campaigns.Controllers
 {
@@ -176,9 +176,54 @@ namespace Campaigns.Controllers
                 _logger.LogError(ex, "Server error" + ex.Message);
                 return StatusCode(500, "Server Error");
             }
-
-
         }
+
+        [HttpGet("JustMatchingCampaigns")]
+        public async Task<ActionResult<List<CampaignModel>>> JustMatchingCampaigns([FromQuery] List<States> states, [FromQuery] decimal loanAmount)
+        {
+            
+            try
+            {
+                if (!states.Any() || loanAmount <= 0)
+                {
+                    return BadRequest("Invalid states or loan amount.");
+                }
+                var filteredCampaigns = await _campaigns.MatchingCampaigns(states, loanAmount);
+                if (filteredCampaigns == null)
+                {
+                    _logger.LogError("Not found");
+                    return NotFound("Campaigns with matching attributed not found");
+                }
+                return Ok(filteredCampaigns);
+            }
+            catch (Exception ex)
+
+            {
+                _logger.LogError("Exception occured" + ex.Message);
+                return BadRequest("error");
+            }
+            
+        }
+
+        [HttpGet("MatchingCampaignByLeadLimit")]
+        public async Task<ActionResult<List<CampaignModel>>> GetCampaignsByLeadLimit([FromQuery] List<States> states,[FromQuery] decimal loanAmount,[FromQuery] decimal cost)
+        {
+            try
+            {
+                var fetchedCampaigns = await _campaigns.GettingCampaignsByLeadLimit(states, loanAmount, cost);
+                if(fetchedCampaigns == null)
+                {
+                    _logger.LogError("Could not find the campaigns");
+                    return NotFound("Could not found the campaigns");
+                }
+                return Ok(fetchedCampaigns);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError("Error in fetching campaigns on the server" + ex.Message);
+                return BadRequest("Server error");
+            }
+        } 
     }
 }
 

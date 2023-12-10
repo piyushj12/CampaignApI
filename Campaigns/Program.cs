@@ -1,4 +1,5 @@
 ﻿using Campaigns.Models;
+using Campaigns.Services;
 using Campaigns.Services.Interfaces;
 using Campaigns.Services.Repository;
 using Campaigns.Services.Services;
@@ -26,6 +27,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<CampaignMongoRepository>();
+builder.Services.AddSingleton<DailyRecordRepository>();
 builder.Services.AddSingleton<ICampaignInterface, CampaignServices>();
 builder.Services.AddMemoryCache();
 

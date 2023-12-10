@@ -1,5 +1,6 @@
 ﻿using System;
 using Campaigns.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Campaigns.Services.Interfaces
@@ -22,6 +23,10 @@ namespace Campaigns.Services.Interfaces
              int pageSize = 10,
              string sortField = "CampaignName",
              string sortDirection = "asc");
+
+        Task<List<CampaignModel>> MatchingCampaigns(List<States> states, decimal loanAmount);
+
+        Task<List<CampaignModel>> GettingCampaignsByLeadLimit(List<States> states, decimal loanAmount, decimal cost);
 
     }
 }

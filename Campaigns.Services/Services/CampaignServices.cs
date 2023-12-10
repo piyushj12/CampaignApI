@@ -1,27 +1,32 @@
 ﻿using System;
+using System.Linq;
 using AutoMapper;
 using Campaigns.Data;
 using Campaigns.Models;
+using Campaigns.Services;
 using Campaigns.Services.Interfaces;
 using Campaigns.Services.Repository;
 using CustomExceptions;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Bson;
 
 namespace Campaigns.Services.Services
 {
 	public class CampaignServices: ICampaignInterface
 	{
 		private readonly CampaignMongoRepository _campaignMongoRepository;
+		private readonly DailyRecordRepository _dailyRecordRepository;
 
 		private readonly IMemoryCache _memoryCache;
 
 		private readonly IMapper _mapper;
 
-		public CampaignServices(CampaignMongoRepository repo, IMemoryCache memoryCache)
+		public CampaignServices(CampaignMongoRepository repo, IMemoryCache memoryCache, DailyRecordRepository dailyRepo)
 		{
 			this._campaignMongoRepository = repo;
 			this._memoryCache = memoryCache;
 			this._mapper = GetMapper();
+			this._dailyRecordRepository = dailyRepo;
 		}
 
 		//IMapping Configuration
@@ -118,6 +123,53 @@ namespace Campaigns.Services.Services
 			var campaignModels =  _mapper.Map<IEnumerable<CampaignModel>>(campaign);
 			return (campaignModels, totalCampaigns);
         }
+
+
+
+        public async Task<List<CampaignModel>> MatchingCampaigns(List<States> states, decimal loanAmount)
+        {
+			var fethedCampaigns = await _campaignMongoRepository.GetMatchingCampaigns(states, loanAmount);
+			return _mapper.Map<List<CampaignModel>>(fethedCampaigns);
+        }
+
+        public async Task<List<CampaignModel>> GettingCampaignsByLeadLimit(List<States> states, decimal loanAmount, decimal cost)
+        {
+
+			var todayDate = DateTime.Today;
+			var validCampaigns = new List<CampaignModel>();
+
+			var matchingCampaigns = await _campaignMongoRepository.GetMatchingCampaigns(states, loanAmount);
+
+			foreach(var campaign in matchingCampaigns)
+			{
+				if(!campaign.ActiveIndicator.HasValue || !campaign.ActiveIndicator.Value ||
+					campaign.UnderReviewIndicator.HasValue && campaign.UnderReviewIndicator.Value)
+				{
+					continue;
+				}
+
+				var dailyRecord = await _dailyRecordRepository.GetOrCreateDailyRecord(campaign.CampaignId, todayDate);
+
+                if (campaign.DailyLeadLimit.HasValue && campaign.DailyLeadLimit.Value > 0 && dailyRecord.CheckedCount >= campaign.DailyLeadLimit.Value)
+                {
+                    continue; // Skip if lead limit exceeded
+                }
+
+                if (campaign.DailySpendLimit.HasValue && dailyRecord.CheckedSpendAmount + cost >= campaign.DailySpendLimit.Value)
+				{
+					continue;
+				}
+
+				await _dailyRecordRepository.UpdateDailyRecord(dailyRecord, cost);
+
+				validCampaigns.Add(_mapper.Map<CampaignModel>(campaign));
+			}
+
+			return validCampaigns;
+        }
+
     }
 }
+
+
 

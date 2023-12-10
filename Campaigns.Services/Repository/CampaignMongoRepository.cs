@@ -3,6 +3,10 @@ using Campaigns.Data;
 using Campaigns.Models;
 using CustomExceptions;
 using MongoDB.Driver;
+using MongoDB.Bson;
+
+//need to include this to use Linq queries to convert to ToListasync method
+using MongoDB.Driver.Linq;
 
 namespace Campaigns.Services.Repository
 {
@@ -77,39 +81,73 @@ namespace Campaigns.Services.Repository
 				.Limit(pageSize)
 				.ToListAsync();
 
-			
-
 			var totalCampaigns = await _repo.CountDocumentsAsync(filter);
-
-
-			return (result, totalCampaigns);
-			
-			
+			return (result, totalCampaigns);			
 		}
 
+		
 
-		public FilterDefinition<Campaign> SearchFilter(string? searchName, string? searchState, string? searchDay)
+		public async Task<List<Campaign>> GetMatchingCampaigns(List<States> states, decimal loanAmount)
 		{
 
-			var filterBuilder = Builders<Campaign>.Filter;
-			FilterDefinition<Campaign> filter = filterBuilder.Empty;
+            //var filter = Builders<Campaign>.Filter.AnyIn(c => c.States, states) &
+            //             Builders<Campaign>.Filter.Eq(c => c.ActiveIndicator, true) &
+            //             Builders<Campaign>.Filter.Eq(c => c.UnderReviewIndicator, false) &
+            //             Builders<Campaign>.Filter.Gte(c => c.MinLoanAmount, loanAmount);
 
-			if (!string.IsNullOrEmpty(searchName))
-				filter &= filterBuilder.Eq(c => c.CampaignName, searchName);
-			if (!string.IsNullOrEmpty(searchState))
-			{ 
-				if(Enum.TryParse<States>(searchState, out var stateEnum))
-				{
+            ////Builders<Campaign>.Filter.Lte(c => c.MaxLoanAmount, loanAmount);
+
+
+
+            //return await _repo.Find(filter).ToListAsync();
+
+            var query = _repo.AsQueryable()
+                    .Where(c => c.States.Any(state => states.Contains(state)) &&
+                                c.MinLoanAmount <= loanAmount &&
+                                c.MaxLoanAmount >= loanAmount &&
+                                c.ActiveIndicator == true &&
+                                c.UnderReviewIndicator == false);
+
+            return await query.ToListAsync();
+
+        }
+
+        // Common Methods
+
+
+        public async Task<bool> IsCampaignActive(Guid campaignId)
+        {
+            var filter = Builders<Campaign>.Filter.Eq(x => x.CampaignId, campaignId);
+            var campaignToBeDeleted = _repo.Find(filter).Limit(1).First();
+            if (campaignToBeDeleted.ActiveIndicator == true)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public FilterDefinition<Campaign> SearchFilter(string? searchName, string? searchState, string? searchDay)
+        {
+
+            var filterBuilder = Builders<Campaign>.Filter;
+            FilterDefinition<Campaign> filter = filterBuilder.Empty;
+
+            if (!string.IsNullOrEmpty(searchName))
+                filter &= filterBuilder.Eq(c => c.CampaignName, searchName);
+            if (!string.IsNullOrEmpty(searchState))
+            {
+                if (Enum.TryParse<States>(searchState, out var stateEnum))
+                {
                     filter &= filterBuilder.Eq("States", stateEnum);
                 }
-				else
-				{
-					throw new InvalidStateOrDayException("Invalid State");
-				}
-			}
-				
-			if (!string.IsNullOrEmpty(searchDay))
-			{
+                else
+                {
+                    throw new InvalidStateOrDayException("Invalid State");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(searchDay))
+            {
                 if (Enum.TryParse<DayOfWeek>(searchDay, out var dayEnum))
                 {
                     filter &= filterBuilder.Eq("DaysOfWeek", dayEnum);
@@ -119,18 +157,13 @@ namespace Campaigns.Services.Repository
                     throw new InvalidStateOrDayException("Invalid Day");
                 }
             }
-               
+
 
             return filter;
 
-		}
+        }
 
 
-
-
-
-
-        // Common Methods 
 
         public SortDefinition<Campaign> GetSortedDefinition(string sortField, string sortDirection)
         {
@@ -176,17 +209,7 @@ namespace Campaigns.Services.Repository
         }
 
 
-        public async Task<bool> IsCampaignActive(Guid campaignId)
-		{
-			var filter = Builders<Campaign>.Filter.Eq(x => x.CampaignId, campaignId);
-            var campaignToBeDeleted = _repo.Find(filter).Limit(1).First();
-            if (campaignToBeDeleted.ActiveIndicator == true)
-            {
-                return true;
-            }
-			return false; 
-        }
-
+   
 
         public async Task<bool> IsCampaignNameExist(Campaign campaign)
 		{
@@ -197,3 +220,27 @@ namespace Campaigns.Services.Repository
 	}
 }
 
+
+//using LINQQ
+
+//public async Task<List<Campaign>> GetMatchingCampaigns(List<States> states, decimal loanAmount)
+//{
+//    var query = _repo.AsQueryable()
+//        .Where(c => c.States.Any(state => states.Contains(state)) &&
+//                    c.MinLoanAmount <= loanAmount &&
+//                    c.MaxLoanAmount >= loanAmount);
+
+//    return await query.ToListAsync();
+//}
+
+
+
+//different way to use Filter 
+
+//var filter = Builders<Campaign>.Filter;
+//var stateFilter = filter.AnyIn(c => c.States, states);
+//var loanAmountFilter = filter.Gte(c => c.MinLoanAmount, loanAmount) & filter.Lte(c => c.MaxLoanAmount, loanAmount);
+
+//var combinedFilter = filter.And(stateFilter, loanAmountFilter);
+
+//return await _repo.Find(combinedFilter).ToListAsync();

@@ -31,12 +31,15 @@ namespace Campaigns.Data
         public List<States> States { get; set; }
 
         [BsonElement("minLoanAmount")]
+        [BsonRepresentation(BsonType.Decimal128)]
         public decimal? MinLoanAmount { get; set; }
 
         [BsonElement("maxLoanAmount")]
+        [BsonRepresentation(BsonType.Decimal128)]
         public decimal? MaxLoanAmount { get; set; }
 
         [BsonElement("dailySpendLimit")]
+        [BsonRepresentation(BsonType.Decimal128)]
         public decimal? DailySpendLimit { get; set; }
 
         [BsonElement("dailyLeadLimit")]
