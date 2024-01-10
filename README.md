@@ -59,6 +59,3 @@ The architecture of this solution is meticulously organized into distinct projec
 
 ## Contributing
 We openly welcome contributions to this project. Adherence to the project's coding standards is appreciated. Kindly submit your pull requests for review.
-
-## Contact
-For queries or suggestions, feel free to reach out at piyushnjain23@gmail.com.
